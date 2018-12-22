@@ -1,10 +1,8 @@
-AR	=gar
-AS	=gas
-CC	=gcc
-LD	=gld
-CFLAGS	=-Wall -O -fstrength-reduce -fcombine-regs -fomit-frame-pointer \
-	-mstring-insns -nostdinc -I../include
-CPP	=gcc -E -nostdinc -I../include
+include ../config.mk
+
+LDFLAGS += -r
+CFLAGS  += -I../include
+CPP		+= -I../include
 
 .c.s:
 	$(CC) $(CFLAGS) \

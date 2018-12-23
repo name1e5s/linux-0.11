@@ -153,7 +153,9 @@ void *malloc(unsigned int len)
 		free_bucket_desc = bdesc->next;
 		bdesc->refcnt = 0;
 		bdesc->bucket_size = bdir->size;
-		bdesc->page = bdesc->freeptr = (void *) cp = get_free_page();
+		cp = get_free_page();
+        bdesc->freeptr = (void *) cp;
+        bdesc->page = bdesc->freeptr;
 		if (!cp)
 			panic("Out of memory in kernel malloc()");
 		/* Set up the chain of free objects */

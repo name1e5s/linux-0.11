@@ -18,7 +18,7 @@ OBJS	= memory.o page.o
 all: mm.o
 
 mm.o: $(OBJS)
-	$(LD) -r -o mm.o $(OBJS)
+	$(LD) $(LDFLAGS) -o mm.o $(OBJS)
 
 clean:
 	rm -f core *.o *.a tmp_make

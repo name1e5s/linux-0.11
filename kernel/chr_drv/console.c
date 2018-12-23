@@ -123,7 +123,7 @@ static void scrup(void)
 					"c" ((video_num_lines-1)*video_num_columns>>1),
 					"D" (video_mem_start),
 					"S" (origin)
-					:"cx","di","si");
+					:) ;
 				scr_end -= origin-video_mem_start;
 				pos -= origin-video_mem_start;
 				origin = video_mem_start;
@@ -134,7 +134,7 @@ static void scrup(void)
 					::"a" (video_erase_char),
 					"c" (video_num_columns),
 					"D" (scr_end-video_size_row)
-					:"cx","di");
+					:) ;
 			}
 			set_origin();
 		} else {
@@ -148,7 +148,7 @@ static void scrup(void)
 				"c" ((bottom-top-1)*video_num_columns>>1),
 				"D" (origin+video_size_row*top),
 				"S" (origin+video_size_row*(top+1))
-				:"cx","di","si");
+				:) ;
 		}
 	}
 	else		/* Not EGA/VGA */
@@ -163,7 +163,7 @@ static void scrup(void)
 			"c" ((bottom-top-1)*video_num_columns>>1),
 			"D" (origin+video_size_row*top),
 			"S" (origin+video_size_row*(top+1))
-			:"cx","di","si");
+			:) ;
 	}
 }
 
@@ -182,7 +182,7 @@ static void scrdown(void)
 			"c" ((bottom-top-1)*video_num_columns>>1),
 			"D" (origin+video_size_row*bottom-4),
 			"S" (origin+video_size_row*(bottom-1)-4)
-			:"ax","cx","di","si");
+			:) ;
 	}
 	else		/* Not EGA/VGA */
 	{
@@ -197,7 +197,7 @@ static void scrdown(void)
 			"c" ((bottom-top-1)*video_num_columns>>1),
 			"D" (origin+video_size_row*bottom-4),
 			"S" (origin+video_size_row*(bottom-1)-4)
-			:"ax","cx","di","si");
+			:) ;
 	}
 }
 
@@ -262,7 +262,7 @@ static void csi_J(int par)
 		"stosw\n\t"
 		::"c" (count),
 		"D" (start),"a" (video_erase_char)
-		:"cx","di");
+		:) ;
 }
 
 static void csi_K(int par)
@@ -293,7 +293,7 @@ static void csi_K(int par)
 		"stosw\n\t"
 		::"c" (count),
 		"D" (start),"a" (video_erase_char)
-		:"cx","di");
+		:) ;
 }
 
 void csi_m(void)
@@ -461,7 +461,7 @@ void con_write(struct tty_struct * tty)
 					__asm__("movb _attr,%%ah\n\t"
 						"movw %%ax,%1\n\t"
 						::"a" (c),"m" (*(short *)pos)
-						:"ax");
+						:) ;
 					pos += 2;
 					x++;
 				} else if (c==27)

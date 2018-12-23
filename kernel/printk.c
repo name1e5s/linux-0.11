@@ -36,6 +36,6 @@ int printk(const char *fmt, ...)
 		"addl $8,%%esp\n\t"
 		"popl %0\n\t"
 		"pop %%fs"
-		::"r" (i):"ax","cx","dx");
+		::"r" (i):) ;
 	return i;
 }

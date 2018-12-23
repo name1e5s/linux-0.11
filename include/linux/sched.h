@@ -194,7 +194,7 @@ __asm__("movw %%dx,%0\n\t" \
 	  "m" (*((addr)+4)), \
 	  "m" (*((addr)+7)), \
 	  "d" (base) \
-	:"dx")
+	:) 
 
 #define _set_limit(addr,limit) \
 __asm__("movw %%dx,%0\n\t" \
@@ -206,7 +206,7 @@ __asm__("movw %%dx,%0\n\t" \
 	::"m" (*(addr)), \
 	  "m" (*((addr)+6)), \
 	  "d" (limit) \
-	:"dx")
+	:) 
 
 #define set_base(ldt,base) _set_base( ((char *)&(ldt)) , base )
 #define set_limit(ldt,limit) _set_limit( ((char *)&(ldt)) , (limit-1)>>12 )

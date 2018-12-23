@@ -78,8 +78,10 @@ int copy_process(int nr,long ebp,long edi,long esi,long gs,long none,
 	if (!p)
 		return -EAGAIN;
 	task[nr] = p;
+    __asm__ volatile ("cld");
 	*p = *current;	/* NOTE! this doesn't copy the supervisor stack */
-	p->state = TASK_UNINTERRUPTIBLE;
+    printk("%x :: %x \n",current->counter,p->counter);
+    p->state = TASK_UNINTERRUPTIBLE;
 	p->pid = last_pid;
 	p->father = current->pid;
 	p->counter = p->priority;

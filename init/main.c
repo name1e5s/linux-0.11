@@ -136,7 +136,16 @@ void main(void)		/* This really IS void, no error here. */
 	floppy_init();
 	sti();
 	move_to_user_mode();
-	if (!fork()) {		/* we count on this going ok */
+
+    /**
+     * fork and pause dosen't inline as expected
+     * we should do it manually.
+     */
+    long __res,__rs;
+    __asm__ volatile ("int $0x80" \
+            : "=a"(__res)   \
+            : "0"(__NR_fork));
+	if (__res == 0) {		/* we count on this going ok */
 		init();
 	}
 /*
@@ -146,7 +155,11 @@ void main(void)		/* This really IS void, no error here. */
  * can run). For task0 'pause()' just means we go check if some other
  * task can run, and if not we return here.
  */
-	for(;;) pause();
+	for(;;) {
+        __asm__ volatile ("int $0x80" \
+                :"=a"(__rs)
+                :"0"(__NR_pause));
+    }
 }
 
 static int printf(const char *fmt, ...)

@@ -154,7 +154,6 @@ int copy_page_tables(unsigned long from,unsigned long to,long size)
 	unsigned long this_page;
 	unsigned long * from_dir, * to_dir;
 	unsigned long nr;
-    printk("from: 0x%x , to : 0x%x\n",from,to);
 	if ((from&0x3fffff) || (to&0x3fffff))
 		panic("copy_page_tables called with wrong alignment");
 	from_dir = (unsigned long *) ((from>>20) & 0xffc); /* _pg_dir = 0 */

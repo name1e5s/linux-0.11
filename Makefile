@@ -9,7 +9,7 @@ LD86	=ld86 -0
 
 include config.mk
 
-CFLAGS  += $(RAMDISK) -Iinclude
+CFLAGS  += $(RAMDISK)
 LDFLAGS += -Ttext 0 -e startup_32
 CPP		 += -Iinclude
 

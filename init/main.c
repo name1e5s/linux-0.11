@@ -5,6 +5,7 @@
  */
 
 #define __LIBRARY__
+#define __KERNEL_MAIN__
 #include <unistd.h>
 #include <time.h>
 

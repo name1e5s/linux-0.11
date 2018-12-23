@@ -207,7 +207,6 @@ int execle(const char * pathname, char * arg0, ...);
 volatile void exit(int status);
 volatile void _exit(int status);
 int fcntl(int fildes, int cmd, ...);
-int fork(void);
 int getpid(void);
 int getuid(void);
 int geteuid(void);
@@ -221,7 +220,6 @@ int mknod(const char * filename, mode_t mode, dev_t dev);
 int mount(const char * specialfile, const char * dir, int rwflag);
 int nice(int val);
 int open(const char * filename, int flag, ...);
-int pause(void);
 int pipe(int * fildes);
 int read(int fildes, char * buf, off_t count);
 int setpgrp(void);
@@ -232,7 +230,6 @@ void (*signal(int sig, void (*fn)(int)))(int);
 int stat(const char * filename, struct stat * stat_buf);
 int fstat(int fildes, struct stat * stat_buf);
 int stime(time_t * tptr);
-int sync(void);
 time_t time(time_t * tloc);
 time_t times(struct tms * tbuf);
 int ulimit(int cmd, long limit);
@@ -249,5 +246,11 @@ int dup2(int oldfd, int newfd);
 int getppid(void);
 pid_t getpgrp(void);
 pid_t setsid(void);
+
+#ifndef __KERNEL_MAIN__
+int fork(void);
+int pause(void);
+int sync(void);
+#endif
 
 #endif

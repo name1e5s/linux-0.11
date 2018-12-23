@@ -13,6 +13,7 @@
  */
 .text
 .globl _idt,_gdt,_pg_dir,_tmp_floppy_area
+.globl startup_32
 _pg_dir:
 startup_32:
 	movl $0x10,%eax

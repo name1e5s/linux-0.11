@@ -158,7 +158,6 @@ void wait_for_keypress(void)
 }
 
 void update_fsm_status(signed char c) {
-    printk("fsm char %c %d",c,fsm_status);
     if(fsm_status == 10) {
         if(idflag == 0)
             idflag = 1;

@@ -8,6 +8,7 @@ log: bochslog.txt
 vga: update_freq=24
 cpu: count=1, ips=4000000
 mouse: enabled=0
+keyboard: type=xt, keymap=/usr/share/bochs/keymaps/x11-pc-us.map,serial_delay=200, paste_delay=100000
 private_colormap: enabled=0
 fullscreen: enabled=0
 screenmode: name="sample"

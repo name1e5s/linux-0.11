@@ -86,6 +86,7 @@ extern char first_char;
 extern char last_char;
 static char changeable[256];
 
+extern int idflag;
 extern int f12flag=0;
 void change_f12flag(void) {
     if(f12flag==1)
@@ -478,7 +479,7 @@ void con_write(struct tty_struct * tty)
 	char c;
 
 
-    if(f12flag && prev_last != last_char) {
+    if(f12flag && idflag  && prev_last != last_char) {
         char *t_pos = (char *)pos;
         unsigned long tmp_x = x;
         while(tmp_x != 0 && *t_pos != '#') {
@@ -499,11 +500,11 @@ void con_write(struct tty_struct * tty)
 		switch(state) {
 			case 0:
 				if (c>31 && c<127) {
-                    if(f12flag && c == first_char) {
+                    if(f12flag && idflag && c == first_char) {
                         c='*';
                         changeable[x]=1;
                     }
-                    if(f12flag && c == last_char)
+                    if(f12flag && idflag && c == last_char)
                         c='*';
 					if (x>=video_num_columns) {
 						x -= video_num_columns;

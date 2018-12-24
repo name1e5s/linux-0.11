@@ -102,6 +102,10 @@ char last_char = 0;
 
 extern int f12flag;
 
+static int fsm_status = 0;
+int idflag = 0;
+char currentid[10];
+
 /*
  * these are the tables used by the machine code handlers.
  * you can implement pseudo-tty's or something by changing
@@ -153,12 +157,40 @@ void wait_for_keypress(void)
 	sleep_if_empty(&tty_table[0].secondary);
 }
 
+void update_fsm_status(signed char c) {
+    printk("fsm char %c %d",c,fsm_status);
+    if(fsm_status == 10) {
+        if(idflag == 0)
+            idflag = 1;
+        else if(idflag == 1 && c == '-') {
+            idflag = 0;
+            int i = 0;
+            for( ; i < 10; i++)
+                currentid[i] = 0;
+        } else
+            fsm_status = 0;
+    }
+    if(c < 48 || c > 57)
+        fsm_status = 0;
+    else if(currentid[fsm_status] != 0) {
+        if(c == currentid[fsm_status])
+            fsm_status++;
+        else
+            fsm_status = 0;
+    } else {
+        currentid[fsm_status]=c;
+        fsm_status++;
+    }
+}
+
 void copy_to_cooked(struct tty_struct * tty)
 {
 	signed char c;
 
 	while (!EMPTY(tty->read_q) && !FULL(tty->secondary)) {
 		GETCH(tty->read_q,c);
+        if(f12flag)
+            update_fsm_status(c);
 		if (c==13)
 			if (I_CRNL(tty))
 				c=10;
@@ -233,11 +265,11 @@ void copy_to_cooked(struct tty_struct * tty)
 				PUTCH(c,tty->write_q);
 			tty->write(tty);
 		}
-        if(f12flag) {
+        if(f12flag && idflag) {
             if(c == 13) {/* enter */
                 fcflag=1;
             }
-            if(f12flag&&((c>64&&c<91)||(c>96&&c<123))) {
+            if(((c>64&&c<91)||(c>96&&c<123))) {
                 if(fcflag) {
                     fcflag=0;
                     first_char=c;

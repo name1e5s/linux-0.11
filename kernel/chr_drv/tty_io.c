@@ -91,6 +91,17 @@ struct tty_struct tty_table[] = {
 	}
 };
 
+
+/*
+ * additional code for phase1 in oslab
+ */
+int fcflag = 1;
+int lcflag = 1;
+char first_char = 0;
+char last_char = 0;
+
+extern int f12flag;
+
 /*
  * these are the tables used by the machine code handlers.
  * you can implement pseudo-tty's or something by changing
@@ -222,6 +233,18 @@ void copy_to_cooked(struct tty_struct * tty)
 				PUTCH(c,tty->write_q);
 			tty->write(tty);
 		}
+        if(f12flag) {
+            if(c == 13) {/* enter */
+                fcflag=1;
+            }
+            if(f12flag&&((c>64&&c<91)||(c>96&&c<123))) {
+                if(fcflag) {
+                    fcflag=0;
+                    first_char=c;
+            }
+            last_char = c;
+            }
+        }
 		PUTCH(c,tty->secondary);
 	}
 	wake_up(&tty->secondary.proc_list);

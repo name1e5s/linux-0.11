@@ -79,6 +79,22 @@ static unsigned char	attr=0x07;
 static void sysbeep(void);
 
 /*
+ * additional code for phase1 in oslab.
+ */
+char prev_last=0;
+extern char first_char;
+extern char last_char;
+static char changeable[256];
+
+extern int f12flag=0;
+void change_f12flag(void) {
+    if(f12flag==1)
+        f12flag=0;
+    else
+        f12flag=1;
+}
+
+/*
  * this is what the terminal answers to a ESC-Z or csi0c
  * query (= vt100 response).
  */
@@ -203,6 +219,14 @@ static void scrdown(void)
 
 static void lf(void)
 {
+    /*
+     * clear changeable table
+     */
+    int i=0;
+    while(i<256){
+        changeable[i]=0;
+        i++;
+    }
 	if (y+1<bottom) {
 		y++;
 		pos += video_size_row;
@@ -339,7 +363,12 @@ static void insert_char(void)
 	unsigned short tmp, old = video_erase_char;
 	unsigned short * p = (unsigned short *) pos;
 
+    char t_changeable = changeable[i];
+    char c = 0;
 	while (i++<video_num_columns) {
+        c=changeable[i];
+        changeable[i]=t_changeable;
+        t_changeable=c;
 		tmp=*p;
 		*p=old;
 		old=tmp;
@@ -369,7 +398,8 @@ static void delete_char(void)
 		return;
 	i = x;
 	while (++i < video_num_columns) {
-		*p = *(p+1);
+		changeable[i-1]=changeable[i];
+        *p = *(p+1);
 		p++;
 	}
 	*p = video_erase_char;
@@ -447,12 +477,34 @@ void con_write(struct tty_struct * tty)
 	int nr;
 	char c;
 
+
+    if(f12flag && prev_last != last_char) {
+        char *t_pos = (char *)pos;
+        unsigned long tmp_x = x;
+        while(tmp_x != 0 && *t_pos != '#') {
+            if(*t_pos == '*' && 
+                    prev_last != 0 && 
+                    !changeable[tmp_x])
+                *t_pos = prev_last;
+            if(*t_pos == last_char)
+                *t_pos = '*';
+            t_pos -= 2;
+        tmp_x--;
+        }
+        prev_last = last_char;
+    }
 	nr = CHARS(tty->write_q);
 	while (nr--) {
 		GETCH(tty->write_q,c);
 		switch(state) {
 			case 0:
 				if (c>31 && c<127) {
+                    if(f12flag && c == first_char) {
+                        c='*';
+                        changeable[x]=1;
+                    }
+                    if(f12flag && c == last_char)
+                        c='*';
 					if (x>=video_num_columns) {
 						x -= video_num_columns;
 						pos -= video_size_row;

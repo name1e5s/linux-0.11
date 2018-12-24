@@ -16,7 +16,7 @@
 /*#define KBD_US */
 /*#define KBD_GR */
 /*#define KBD_FR */
-#define KBD_FINNISH
+#define KBD_US
 
 /*
  * Normally, Linux can get the drive parameters from the BIOS at

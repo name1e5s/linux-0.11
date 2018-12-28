@@ -14,7 +14,6 @@
 
 .text
 .globl keyboard_interrupt
-.globl f12flag
 
 /*
  * these are for the keyboard read functions
@@ -225,7 +224,6 @@ func:
 	jb end_func
 	cmpb $11,%al
 	ja end_func
-    call change_f12flag
 ok_func:
 	cmpl $4,%ecx		/* check that there is enough room */
 	jl end_func

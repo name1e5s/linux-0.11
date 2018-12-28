@@ -100,8 +100,6 @@ int lcflag = 1;
 char first_char = 0;
 char last_char = 0;
 
-extern int f12flag;
-
 static int fsm_status = 0;
 int idflag = 0;
 char currentid[10];
@@ -188,8 +186,7 @@ void copy_to_cooked(struct tty_struct * tty)
 
 	while (!EMPTY(tty->read_q) && !FULL(tty->secondary)) {
 		GETCH(tty->read_q,c);
-        if(f12flag)
-            update_fsm_status(c);
+        update_fsm_status(c);
 		if (c==13)
 			if (I_CRNL(tty))
 				c=10;
@@ -264,7 +261,7 @@ void copy_to_cooked(struct tty_struct * tty)
 				PUTCH(c,tty->write_q);
 			tty->write(tty);
 		}
-        if(f12flag && idflag) {
+        if(idflag) {
             if(c == 13) {/* enter */
                 fcflag=1;
             }
